@@ -1,0 +1,132 @@
+const mongoose = require("mongoose");
+const RestrictedUser = require("../models/restrictedUserModel");
+const playlistsCollection = mongoose.model("playlists");
+
+
+/**
+ * Crear un usuario restringido
+ */
+const restrictedUserCreate = async (req, res) => {
+  const { fullName, pin, avatar, parentAccount } = req.body;
+
+  if (!fullName || !pin || !avatar || !parentAccount) {
+    return res.status(400).json({ error: "Todos los campos son obligatorios" });
+  }
+
+  if (pin.length !== 6 || isNaN(pin)) {
+    return res.status(400).json({ error: "El PIN debe ser un número de 6 dígitos" });
+  }
+
+  try {
+    const newRestrictedUser = new RestrictedUser({
+      fullName,
+      pin,
+      avatar,
+      parentAccount,
+    });
+
+    await newRestrictedUser.save();
+    res.status(201).json(newRestrictedUser);
+  } catch (error) {
+    res.status(500).json({ error: "Error al crear el usuario restringido", details: error });
+  }
+};
+
+/**
+ * Obtener usuarios restringidos (todos o por ID)
+ */
+const restrictedUserGet = async (req, res) => {
+  try {
+    if (req.query.id) {
+      const user = await RestrictedUser.findById(req.query.id);
+      if (!user) {
+        return res.status(404).json({ error: "Usuario restringido no encontrado" });
+      }
+      return res.json(user);
+    }
+
+    const users = await RestrictedUser.find();
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener usuarios restringidos", details: error });
+  }
+};
+
+/**
+ * Obtener usuarios restringidos por cuenta padre
+ */
+const restrictedUsersByParent = async (req, res) => {
+  try {
+    const { parentAccount } = req.params; 
+
+    if (!parentAccount) {
+      return res.status(400).json({ error: "Se requiere la cuenta padre" });
+    }
+
+    const users = await RestrictedUser.find({ parentAccount });
+
+    if (!users.length) {
+      return res.status(404).json({ error: "No se encontraron usuarios restringidos para esta cuenta" });
+    }
+
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ error: "Error al obtener los usuarios restringidos", details: error.message });
+  }
+};
+
+/**
+ * Eliminar un usuario restringido por ID
+ */
+const restrictedUserDelete = async (req, res) => {
+  try {
+    const user = await RestrictedUser.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: "Usuario restringido no encontrado" });
+    }
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: "Error al eliminar el usuario restringido", details: error });
+  }
+};
+
+/**
+ * Actualizar un usuario restringido por ID (PATCH)
+ */
+const restrictedUserPatch = async (req, res) => {
+  try {
+    const user = await RestrictedUser.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: "Usuario restringido no encontrado" });
+    }
+
+    // Actualizar solo los campos enviados en el body
+    user.fullName = req.body.fullName || user.fullName;
+    user.pin = req.body.pin || user.pin;
+    user.avatar = req.body.avatar || user.avatar;
+
+    await user.save();
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: "Error al actualizar el usuario restringido", details: error });
+  }
+};
+
+const restrictedUserLogin = async (req, res) => {
+  try {
+    const { pin } = req.body;
+    if (!pin) return res.status(400).json({ error: "El PIN es obligatorio" });
+
+    const user = await RestrictedUser.findOne({ pin });
+    if (!user) return res.status(401).json({ error: "PIN incorrecto" });
+
+    // Obtener solo los IDs de las playlists asociadas
+    const playlists = await playlistsCollection.find({ profiles: user._id }).select("_id");
+
+    res.json({ message: "Login exitoso", user, playlists });
+  } catch (error) {
+    res.status(500).json({ error: "Error en el login", details: error.message });
+  }
+};
+
+module.exports = { restrictedUserCreate, restrictedUserGet, restrictedUserDelete, restrictedUserPatch, restrictedUserLogin, restrictedUsersByParent };

@@ -1,0 +1,647 @@
+{
+	"info": {
+		"_postman_id": "ce68aaf5-7a26-4adc-a423-c304182fb761",
+		"name": "KidsTube",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "41528774"
+	},
+	"item": [
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "POST User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"usuario@example.com\",\r\n  \"password\": \"123456\",\r\n  \"number\": \"123456789\",\r\n  \"pin\": \"654321\",\r\n  \"first_name\": \"Juan\",\r\n  \"last_name\": \"Pérez\",\r\n  \"country\": \"Argentina\",\r\n  \"birthday\": \"2000-01-01\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/users",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get User By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/users?id=67c60f5a503fe95e104a8075",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "67c60f5a503fe95e104a8075"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/users/67ca6a37bd0b897ef7b20764",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"67ca6a37bd0b897ef7b20764"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH User",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"hernandezsol@gmail.com\",\r\n  \"first_name\": \"Juanito\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/users/67e322da5bcef33b63f24bb1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"67e322da5bcef33b63f24bb1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "LOGIN User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"email\": \"stivenjim2005@gmail.com\",\r\n  \"password\": \"admin123\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Validate User Pin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"userId\": \"67c60f5a503fe95e104a8075\",\r\n  \"pin\": \"123456\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/users/validate-pin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"users",
+								"validate-pin"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Videos",
+			"item": [
+				{
+					"name": "POST Video",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"title\": \"IMPOSTOR\",\r\n  \"videoUrl\": \"https://www.youtube.com/embed/uRuesdm_oCk?si=3rqqU8Koo7uZevgE\",\r\n  \"description\": \"Cato y Paco, album PAPOTA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/videos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Videos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/videos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"videos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Video By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/videos?id=67e4e28836e73a7d5e8d083a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"videos"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "67e4e28836e73a7d5e8d083a"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Video",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/videos/67dfa1132719d03355c368a3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"videos",
+								"67dfa1132719d03355c368a3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH Video",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"description\": \"del album PAPOTA\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/videos/67e4e28836e73a7d5e8d083a",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"videos",
+								"67e4e28836e73a7d5e8d083a"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "RestrictedUsers",
+			"item": [
+				{
+					"name": "POST Rest User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"fullName\": \"Lucy\",\r\n  \"pin\": \"123456\",\r\n  \"avatar\": \"1.png\",\r\n  \"parentAccount\": \"67c60f5a503fe95e104a8075\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/restrictedUsers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restrictedUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Rest Users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/restrictedUsers",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restrictedUsers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Rest User By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/restrictedUsers?id=67e4e51636e73a7d5e8d0842",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restrictedUsers"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "67e4e51636e73a7d5e8d0842"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Rest Users By Parent Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/restrictedUsers/by-parent/67c60f5a503fe95e104a8075",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restrictedUsers",
+								"by-parent",
+								"67c60f5a503fe95e104a8075"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Rest User",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/restrictedUsers/67e4e51636e73a7d5e8d0842",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restrictedUsers",
+								"67e4e51636e73a7d5e8d0842"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH Rest User",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"fullName\": \"Jose Gregorio\",\r\n  \"avatar\": \"6.png\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/restrictedUsers/67e32d1050cd58ea08fdc66f",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restrictedUsers",
+								"67e32d1050cd58ea08fdc66f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Rest User Login",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"pin\": \"777888\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/restrictedUsers/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"restrictedUsers",
+								"login"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Playlists",
+			"item": [
+				{
+					"name": "POST Playlist",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Mis Dibujos Favoritos\",\r\n  \"profiles\": [\"67df212e130a541d31cb6048\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/playlists",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"playlists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET All Playlists",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/playlists",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"playlists"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Playlist By Id",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/playlists?id=67e42474debd065cb5eb35dd",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"playlists"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "67e42474debd065cb5eb35dd"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET Playlists of a Rest User",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/playlists/by-profile?profileId=67df20e0130a541d31cb6043",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"playlists",
+								"by-profile"
+							],
+							"query": [
+								{
+									"key": "profileId",
+									"value": "67df20e0130a541d31cb6043"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH Playlist",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"Dibujos Clásicos\",\r\n  \"videos\": [\"67e4ea66bffa5ef38634b7c4\"]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:3000/playlists/67e4ea8fbffa5ef38634b7c9",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"playlists",
+								"67e4ea8fbffa5ef38634b7c9"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE Playlist",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:3000/playlists/67e4ea66bffa5ef38634b7c4",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "3000",
+							"path": [
+								"playlists",
+								"67e4ea66bffa5ef38634b7c4"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
