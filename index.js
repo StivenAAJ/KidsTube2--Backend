@@ -1,8 +1,12 @@
 const express = require('express');
+require('dotenv').config();
 const app = express();
+
 // database connection
 const mongoose = require("mongoose");
-const db = mongoose.connect("mongodb+srv://SAAJ:Stiven!2005@kidstube.4ndpo.mongodb.net/");
+mongoose.connect("mongodb+srv://SAAJ:Stiven!2005@kidstube.4ndpo.mongodb.net/")
+  .then(() => console.log('Conectado a MongoDB'))
+  .catch(err => console.error('Error conectando a MongoDB:', err));
 
 // parser for the request body (required for the POST and PUT methods)
 const bodyParser = require("body-parser");
@@ -10,7 +14,7 @@ app.use(bodyParser.json());
 
 // check for cors
 const cors = require("cors");
-const { userCreate, userGet, userDelete, userPatch, validateParentPin } = require('./controllers/userController');
+const { userCreate, userGet, userDelete, userPatch, validateParentPin, verifyEmail, checkUserStatus, resendVerification, verifySmsCode } = require('./controllers/userController');
 const { userLogin } = require('./controllers/userController');
 const { videoCreate, videoGet, videoDelete, videoPatch } = require('./controllers/videoController');
 const { createPlaylist, getPlaylists, deletePlaylist, playlistPatch, getPlaylistsByProfile, getPlaylistById } = require('./controllers/playlistController');
@@ -27,6 +31,10 @@ app.get("/users", userGet);
 app.delete("/users/:id", userDelete); 
 app.patch("/users/:id", userPatch);
 app.post("/users/validate-pin", validateParentPin); 
+app.post("/users/verify-email/:token", verifyEmail);
+app.get("/users/check-status", checkUserStatus);
+app.post("/users/resend-verification", resendVerification);
+app.post("/users/verify-sms", verifySmsCode);
 
 app.post("/videos", videoCreate);
 app.get("/videos", videoGet);
