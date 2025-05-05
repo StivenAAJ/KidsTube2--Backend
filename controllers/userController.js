@@ -5,9 +5,13 @@ const crypto = require('crypto');
 const mongoose = require('mongoose');
 const { sendVerificationEmail } = require('../config/mailer');
 const { sendSMS } = require('../config/twilio');
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 
 
+// Función para generar un código de verificación aleatorio
+// Este código es un número de 6 dígitos
 const generateVerificationCode = () => {
   return Math.floor(100000 + Math.random() * 900000).toString();
 };
@@ -93,6 +97,81 @@ const userCreate = async (req, res) => {
   }
 };
 
+/*const userLogin = async (req, res) => {
+
+  try {
+    const { email, password } = req.body;
+    console.log('Intento de login:', email);
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    if (user.isGoogleUser) {
+      console.log("Usuario registrado con Google, validación de email completada.");
+      const token = jwt.sign(
+        { userId: user._id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' },
+        console.log("Token generado para usuario de Google:", token),
+      );
+
+      return res.json({
+        message: "Inicio de sesión exitoso para usuario de Google",
+        token,
+        userId: user._id.toString()
+      });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ error: "Credenciales incorrectas" });
+    }
+
+    // Generar código SMS
+    const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+    console.log("Nuevo código SMS generado:", verificationCode);
+
+    // Actualizar usuario con nuevo código
+    user.smsVerificationCode = verificationCode;
+    user.smsVerificationExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 minutos
+    await user.save();
+
+    console.log("Estado del usuario después de guardar:", {
+      userId: user._id,
+      smsVerificationCode: user.smsVerificationCode,
+      smsVerificationExpires: user.smsVerificationExpires
+    });
+
+    // Enviar SMS
+    const phoneNumber = user.number.startsWith('+') ? user.number : `+${user.number}`;
+    await sendSMS(phoneNumber, verificationCode);
+
+    // Token temporal
+    const tempToken = jwt.sign(
+      { 
+        userId: user._id,
+        email: user.email,
+        requiresSmsVerification: true
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '10m' }
+    );
+
+    res.json({
+      message: "Código de verificación enviado",
+      tempToken,
+      requiresSmsVerification: true,
+      userId: user._id.toString()
+    });
+
+  } catch (error) {
+    console.error("Error en login:", error);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+};*/
+
 const userLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -103,6 +182,31 @@ const userLogin = async (req, res) => {
       return res.status(404).json({ error: "Usuario no encontrado" });
     }
 
+    if (user.isGoogleUser) {
+      console.log("Usuario registrado con Google, validación de email completada.");
+
+      // Verifica que JWT_SECRET esté configurado
+      if (!process.env.JWT_SECRET) {
+        throw new Error("JWT_SECRET no está configurado en el entorno");
+      }
+
+      // Genera el token
+      const token = jwt.sign(
+        { userId: user._id, email: user.email },
+        process.env.JWT_SECRET,
+        { expiresIn: '24h' }
+      );
+
+      console.log("Token generado para usuario de Google:", token);
+
+      return res.json({
+        message: "Inicio de sesión exitoso para usuario de Google",
+        token,
+        userId: user._id.toString()
+      });
+    }
+
+    // Verificación de contraseña para usuarios normales
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ error: "Credenciales incorrectas" });
@@ -490,4 +594,64 @@ const resendVerification = async (req, res) => {
   }
 };
 
-module.exports = { userCreate, userGet, userDelete, userPatch, userLogin, validateParentPin, verifyEmail, checkUserStatus, resendVerification, verifySmsCode };
+const googleSignup = async (req, res) => {
+  const { token } = req.body;
+
+  try {
+    console.log("Token recibido:", token);
+
+    // Verifica el token de Google
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    console.log("Token verificado con éxito");
+
+    const payload = ticket.getPayload();
+    console.log("Payload recibido de Google:", payload);
+
+    const { email, name, picture } = payload;
+
+    // Verifica si el usuario ya existe en la base de datos
+    let user = await User.findOne({ email });
+    if (!user) {
+      console.log("Usuario no encontrado, creando uno nuevo...");
+      const [first_name, ...last_name] = name.split(" ");
+      user = new User({
+        email,
+        first_name,
+        last_name: last_name.join(" ") || undefined, // Maneja el caso en que no haya apellido
+        status: "active", // Marca al usuario como verificado automáticamente
+        isGoogleUser: true, // Indica que el usuario se registró con Google
+        pin : generateVerificationCode(), // Genera un PIN aleatorio
+      });
+      await user.save();
+      console.log("Usuario creado:", user);
+    } else {
+      console.log("Usuario ya existe:", user);
+    }
+
+    // Genera un token JWT para el usuario
+    const jwtToken = jwt.sign(
+      { userId: user._id, email: user.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "24h" }
+    );
+
+    res.status(200).json({
+      message: "Usuario registrado con éxito",
+      token: jwtToken,
+      userId: user._id,
+    });
+  } catch (error) {
+    console.error("Error al registrar con Google:", error);
+    res.status(500).json({ message: "Error al registrar con Google" });
+  }
+};
+
+
+
+module.exports = { userCreate, userGet, userDelete, userPatch,
+   userLogin, validateParentPin, verifyEmail, checkUserStatus,
+    resendVerification, verifySmsCode, googleSignup };

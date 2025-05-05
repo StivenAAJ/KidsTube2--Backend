@@ -14,7 +14,7 @@ app.use(bodyParser.json());
 
 // check for cors
 const cors = require("cors");
-const { userCreate, userGet, userDelete, userPatch, validateParentPin, verifyEmail, checkUserStatus, resendVerification, verifySmsCode } = require('./controllers/userController');
+const { userCreate, userGet, userDelete, userPatch, validateParentPin, verifyEmail, checkUserStatus, resendVerification, verifySmsCode, googleSignup } = require('./controllers/userController');
 const { userLogin } = require('./controllers/userController');
 const { videoCreate, videoGet, videoDelete, videoPatch } = require('./controllers/videoController');
 const { createPlaylist, getPlaylists, deletePlaylist, playlistPatch, getPlaylistsByProfile, getPlaylistById } = require('./controllers/playlistController');
@@ -35,6 +35,7 @@ app.post("/users/verify-email/:token", verifyEmail);
 app.get("/users/check-status", checkUserStatus);
 app.post("/users/resend-verification", resendVerification);
 app.post("/users/verify-sms", verifySmsCode);
+app.post("/auth/google-signup", googleSignup);
 
 app.post("/videos", videoCreate);
 app.get("/videos", videoGet);
@@ -56,7 +57,11 @@ app.get("/playlists/by-profile", getPlaylistsByProfile);
 app.get("/playlists/by-id", getPlaylistById);
 
 
-
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
+  res.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+  next();
+});
 
 
 app.listen(3000, () => {
